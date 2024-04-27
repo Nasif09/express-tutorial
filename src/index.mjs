@@ -3,10 +3,20 @@ import routes from './routes/index.mjs';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { mockUsers } from './utils/constants.mjs';
+import mongoose from "mongoose";
 import passport from 'passport';
-import "./strategies/local-strategy.mjs"
+//import "./strategies/local-strategy.mjs"
+import MongoStore from 'connect-mongo';
+import "./strategies/discord-strategy.mjs";
+
+
 
 const app = express(); //create express app
+
+mongoose
+    .connect("mongodb://127.0.0.1:27017/express_tutorial")
+    .then(()=> console.log("Connect to Database"))
+    .catch((err)=> console.log(`Error: ${err}`));
 
 app.use(express.json());//middleware. It parses incoming requests with JSON payloads
 app.use(cookieParser("helloworld"));
@@ -16,7 +26,10 @@ app.use(session({
     resave: false,
     cookie:{
         maxAge: 60000 * 60,
-    }
+    },
+    store: MongoStore.create({
+        client: mongoose.connection.getClient(),
+    })
 }))
 
 app.use(passport.initialize());
@@ -48,6 +61,19 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>{
     console.log(`Running on Port ${PORT}`);
 });
+
+// app.get('/api/auth/discord', passport.authenticate("discord"));
+// app.get(
+//     '/api/auth/discord/redirect',
+//     passport.authenticate("discord"),
+//     (req, res) => {
+//         res.sendStatus(200);
+//     }
+// );
+
+//ApplicationID: 1233077370739622040
+//Public Key : b2dbd0e149d56bdca845d443e0bdea994e24c7110eb58874d3af0a356308f628
+//http://localhost/api/auth/discord/redirect
 
 // app.get("/", (req,res) => {
 //     console.log(req.session);
