@@ -62,14 +62,14 @@ app.listen(PORT, ()=>{
     console.log(`Running on Port ${PORT}`);
 });
 
-// app.get('/api/auth/discord', passport.authenticate("discord"));
-// app.get(
-//     '/api/auth/discord/redirect',
-//     passport.authenticate("discord"),
-//     (req, res) => {
-//         res.sendStatus(200);
-//     }
-// );
+app.get('/api/auth/discord', passport.authenticate("discord"));
+app.get(
+    '/api/auth/discord/redirect',
+    passport.authenticate("discord"),
+    (req, res) => {
+        res.sendStatus(200);
+    }
+);
 
 //ApplicationID: 1233077370739622040
 //Public Key : b2dbd0e149d56bdca845d443e0bdea994e24c7110eb58874d3af0a356308f628
